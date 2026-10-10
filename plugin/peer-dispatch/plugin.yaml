@@ -1,0 +1,6 @@
+name: peer-dispatch
+version: 1.0.0
+description: "Buy intelligence with time, not tokens. Dispatch a task to a peer Hermes bot; the CALLING session is woken on completion. Tool: peer_dispatch. Thin in-gateway wrapper over scripts/bot_dispatch.py."
+author: "Hermes-arbitrage"
+provides_tools:
+  - peer_dispatch

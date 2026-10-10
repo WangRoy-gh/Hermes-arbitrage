@@ -1,0 +1,47 @@
+# Example: the config keys peer-dispatch needs, in the DISPATCHER profile's
+# config.yaml (~/.hermes/profiles/<dispatcher>/config.yaml).
+#
+# Two things must BOTH be true or the tool silently does nothing:
+#   1. the plugin is enabled
+#   2. the toolset is listed for the platform your sessions use
+#      (desktop + CLI sessions resolve the `cli` platform)
+
+plugins:
+  enabled:
+    - peer-dispatch          # ← the plugin
+
+platform_toolsets:
+  cli:
+    - terminal
+    - file
+    - peer_dispatch          # ← the toolset (note: underscore, not hyphen)
+
+# If specialists also dispatch to each other (mesh), give EACH of them the same
+# two entries plus a copy of the plugin + wrapper. Keep the copies byte-identical;
+# bd_gc_daily.sh md5-checks them daily.
+#
+# A profile that should only RECEIVE (never dispatch) gets neither — it stays a
+# pure callee.
+
+# ---------------------------------------------------------------------------
+# Peer registry: how the dispatcher reaches each peer. With a multiplexed
+# gateway every profile is a mirror path on ONE shared listener.
+# ---------------------------------------------------------------------------
+bot_peers:
+  specialist-a:
+    url: http://127.0.0.1:8642/p/specialist-a
+  specialist-b:
+    url: http://127.0.0.1:8642/p/specialist-b
+
+# ---------------------------------------------------------------------------
+# Runtime env (set wherever your systemd user units read environment, or the
+# profile's .env). Defaults preserve the shipped behaviour — override to match
+# YOUR profile names. See docs/design.md §9.
+# ---------------------------------------------------------------------------
+#   PEER_DISPATCH_PROFILE=<dispatcher>        # dispatcher scope / origin fallback
+#   PEER_DISPATCH_GC_PROFILES="<dispatcher> specialist-a receiver-c"  # session-GC scope (incl. receive-only)
+#   PEER_DISPATCH_TWIN_PROFILES="<dispatcher> specialist-a"            # twin-drift scope (tool-installed only)
+#   PW_ORIGIN_PROFILE=<dispatcher>            # sweeper re-delivery scope
+#   PW_API_BASE=http://127.0.0.1:8642/p/<dispatcher>   # sweeper POST target
+#   HERMES_BIN=/path/to/hermes                # hermes executable
+#   PW_GRACE_S=120  PW_HARD_CAP_S=3600        # race-guard window

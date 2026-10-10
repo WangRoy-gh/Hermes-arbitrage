@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+*.bak
+*.bak.*
+.DS_Store
+bot_dispatch/
+_sweeper/
